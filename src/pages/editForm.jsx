@@ -2,27 +2,19 @@ import React from 'react';
 import SimpleReactValidator from 'simple-react-validator';
 
 class editData extends React.Component {
-
   constructor() {
     super()
-
     this.validator = new SimpleReactValidator({
-
       element: (message, className) => <div className='text-danger'>{message}</div>
-    }
-    )
-
-
+    })
     this.state = {
       name: '',
       contactNumber: '',
       email: '',
       username: '',
       password: '',
-
-
+      successMessage:'',
     }
-
   }
   componentDidMount = () => {
     console.log(this.props)
@@ -30,26 +22,22 @@ class editData extends React.Component {
     const isloggedIn = localStorage.getItem('loggedInuser')
     console.log(data)
     if (data && isloggedIn && data.username === isloggedIn) {
-
       this.setState({
         name: data.name,
         contactNumber: data.contactNumber,
         email: data.email,
         username: data.username,
         password: data.password,
-
       })
     }
     else {
       localStorage.setItem('loggedInuser', '')
       this.props.history.push('/login')
     }
-
   }
 
   saveData = (e) => {
     e.preventDefault()
-
     if (this.validator.allValid()) {
       const userData = {
         'name': this.state.name,
@@ -64,25 +52,18 @@ class editData extends React.Component {
       }
       localStorage.setItem(this.state.username, JSON.stringify(userData))
       this.props.history.push(`/editData/${this.state.username}`)
+      this.setState({
+        successMessage:'successfully changed details'
+      })
     }
     else {
       this.validator.showMessages();
       this.forceUpdate();
-
     }
   }
   setTitle = (e) => {
     this.setState({ [e.target.name]: e.target.value })
-
   }
-
-  responseGoogle = (response) => {
-    console.log(response.accessToken)
-    localStorage.setItem('token', response.accessToken)
-  }
-
-
-
 
   render() {
     const form_style = {
@@ -93,17 +74,11 @@ class editData extends React.Component {
       position: 'absolute',
       transform: 'translate(-50%,-50%)',
     }
-
-    if (this.state.isLoggedIn) {
-      this.props.history.push('/home')
-    }
-
-
-
     return (
       <div>
         <div style={form_style}>
           <h3>Edit Detail:</h3>
+          <span style={{color:'green'}}>{this.state.successMessage}</span>
           <form action="." onSubmit={this.saveData}>
             <div className="form-group">
               <label htmlFor='name' className="form-label">
@@ -118,7 +93,7 @@ class editData extends React.Component {
                 Contact Number
             </label>
               <input type="text" id='contactNumber' className="form-control" name='contactNumber' value={this.state.contactNumber} onChange={this.setTitle} placeholder='contact umber' />
-              {this.validator.message('contact Number', this.state.contactNumber, 'required|numeric')}
+              {this.validator.message('contact Number', this.state.contactNumber, 'required|numeric|min:10')}
             </div>
 
             <div className="form-group">
@@ -134,7 +109,7 @@ class editData extends React.Component {
                 Username
             </label>
               <input type="text" id='username' className="form-control" name='username' value={this.state.username} onChange={this.setTitle} placeholder='username' />
-              {this.validator.message('user name', this.state.username, 'required|alpha')}
+              {this.validator.message('user name', this.state.username, 'required|alpha|min:5')}
             </div>
 
             <div className="form-group">
@@ -142,7 +117,7 @@ class editData extends React.Component {
                 Password
             </label>
               <input type="password" id='name' className="form-control" name='password' value={this.state.password} onChange={this.setTitle} placeholder='password' />
-              {this.validator.message('user name', this.state.password, 'required|alpha_num_dash')}
+              {this.validator.message('password', this.state.password, 'required|alpha_num_dash')}
             </div>
 
             <div className="form-group">

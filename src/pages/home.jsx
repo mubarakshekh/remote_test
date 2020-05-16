@@ -1,60 +1,44 @@
 import React from 'react';
 
 class Home extends React.Component {
-
   constructor(props) {
     super(props)
-
     this.state = {
       name: '',
       contactNumber: '',
       email: '',
       username: '',
       password: '',
-
-
     }
-
   }
 
   componentDidMount = () => {
-    console.log(this.props)
     const data = JSON.parse(localStorage.getItem(this.props.match.params.username))
     const isloggedIn = localStorage.getItem('loggedInuser')
-    console.log(data)
     if (data && isloggedIn && data.username === isloggedIn) {
-
       this.setState({
         name: data.name,
         contactNumber: data.contactNumber,
         email: data.email,
         username: data.username,
         password: data.password,
-
       })
     }
     else {
      localStorage.setItem( 'loggedInuser', '' )
       this.props.history.push('/login')
     }
-
-
-
-
   }
 
   editData = () => {
     this.props.history.push(`/editData/${this.state.username}`)
   }
+
   logout = () => {
     localStorage.setItem( 'loggedInuser', '' )
     this.props.history.push('/')
   }
-
-
   render() {
-
-
     const form_style = {
       width: '500px',
       display: 'inline-block',
@@ -69,7 +53,6 @@ class Home extends React.Component {
       fontWeight: 'bold'
 
     }
-
 
     return (
       <div>

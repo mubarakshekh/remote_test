@@ -1,21 +1,13 @@
 import React from 'react';
 import { Link } from "react-router-dom";
-
 import SimpleReactValidator from 'simple-react-validator';
 
-
-
 class Register extends React.Component {
-
   constructor() {
     super()
-
     this.validator = new SimpleReactValidator({
-
       element: (message, className) => <div className='text-danger'>{message}</div>
-    }
-    )
-
+    })
 
     this.state = {
       name: '',
@@ -24,27 +16,19 @@ class Register extends React.Component {
       username: '',
       password: '',
       error_user: '',
-
-
     }
-
   }
-
-
 
   handleSubmit = (e) => {
     e.preventDefault()
-
     if (this.validator.allValid()) {
       const exusername = JSON.parse(localStorage.getItem(this.state.username))
       if (exusername) {
         this.setState({
           error_user: 'username exist'
         })
-
       }
       else {
-
         const userData = {
           'name': this.state.name,
           'contactNumber': this.state.contactNumber,
@@ -52,31 +36,20 @@ class Register extends React.Component {
           'username': this.state.username,
           'password': this.state.password,
         }
-
         this.props.history.push('/login')
         localStorage.setItem(this.state.username, JSON.stringify(userData))
-
       }
     }
     else {
       this.validator.showMessages();
       this.forceUpdate();
-
     }
   }
+
   setTitle = (e) => {
     this.setState({ [e.target.name]: e.target.value })
-   
+
   }
-
-  responseGoogle = (response) => {
-    console.log(response.accessToken)
-    localStorage.setItem('token', response.accessToken)
-  }
-
-
-
-
   render() {
     const form_style = {
       width: '500px',
@@ -86,7 +59,6 @@ class Register extends React.Component {
       position: 'absolute',
       transform: 'translate(-50%,-50%)',
     }
-
     return (
       <div>
         <div style={form_style}>
@@ -106,7 +78,7 @@ class Register extends React.Component {
                 Contact Number
             </label>
               <input type="text" id='contactNumber' className="form-control" name='contactNumber' value={this.state.contactNumber} onChange={this.setTitle} placeholder='contact umber' />
-              {this.validator.message('contact Number', this.state.contactNumber, 'required|numeric')}
+              {this.validator.message('contact Number', this.state.contactNumber, 'required|numeric|min:10')}
             </div>
 
             <div className="form-group">
@@ -122,7 +94,7 @@ class Register extends React.Component {
                 Username
             </label>
               <input type="text" id='username' className="form-control" name='username' value={this.state.username} onChange={this.setTitle} placeholder='username' />
-              {this.validator.message('user name', this.state.username, 'required|alpha')}
+              {this.validator.message('user name', this.state.username, 'required|alpha|min:5')}
             </div>
 
             <div className="form-group">
